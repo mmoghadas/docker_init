@@ -18,6 +18,7 @@ export VAGRANTNAME=docker
 sh bootstrap.sh
 ```bash
 
+
 ## Usage
 ```bash
 export DOCKER_HOST=tcp://localhost:2376
