@@ -20,7 +20,7 @@ sh bootstrap.sh
 
 
 ## Usage
-```bash
+```
 export DOCKER_HOST=tcp://localhost:2376
 docker ps
-```bash
+```
