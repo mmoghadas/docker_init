@@ -4,7 +4,7 @@ This tool allows you to quickly start a docker vm on your localhost
 * Note: Currently tested on OSX
 
 
-## Usage
+## Setup
 
 ```bash
 git clone git@github.com:mmoghadas/docker_init.git
@@ -16,4 +16,10 @@ export VAGRANTHOME=~/vagrant
 
 export VAGRANTNAME=docker
 sh bootstrap.sh
+```bash
+
+## Usage
+```bash
+export DOCKER_HOST=tcp://localhost:2376
+docker ps
 ```bash
