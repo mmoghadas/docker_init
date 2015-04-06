@@ -9,18 +9,16 @@ This tool allows you to quickly start a docker vm on your localhost
 ```
 git clone git@github.com:mmoghadas/docker_init.git
 cd docker_init
+bundle
 
-# VAGRANTHOME is where you typically save your vagrant files
-export VAGRANTHOME=~/vagrant
-# VAGRANTHOME is the name of your new docker vm
+alias docker_init="bundle exec ./bin/docker_init"
 
-export VAGRANTNAME=docker
-sh bootstrap.sh
+docker_init -d ~/vagrant -n mydocker
 ```
 
 
 ## Usage
 ```
-export DOCKER_HOST=tcp://localhost:2376
+export DOCKER_HOST=tcp://localhost:<port_number>
 docker ps
 ```

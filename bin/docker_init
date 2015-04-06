@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'docker_init/cli'
+DockerInit::Cli.run
