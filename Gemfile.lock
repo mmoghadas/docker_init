@@ -1,0 +1,29 @@
+PATH
+  remote: .
+  specs:
+    docker_init ()
+      clamp
+      colorize
+      erubis
+      hashie
+      net-scp
+      net-ssh
+      rake (= 10.0.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    clamp (0.6.4)
+    colorize (0.7.5)
+    erubis (2.7.0)
+    hashie (3.4.1)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.2)
+    rake (10.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  docker_init!
