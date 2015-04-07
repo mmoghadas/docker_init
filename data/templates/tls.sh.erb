@@ -3,7 +3,7 @@
 set -e
 
 # generate CA key/cert
-cd /tmp/docker_init/
+cd <%=store%>
 openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ca-key.pem -out ca.pem -config ca.cnf
 
 ###################
@@ -13,7 +13,7 @@ openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout ca-key.pem -out
 openssl genrsa -out server-key.pem 2048
 
 # generate server csr
-export HOST=<%="#{hostname}"%>
+export HOST=<%=hostname%>
 openssl req -subj "/CN=$HOST" -new -key server-key.pem -out server.csr
 
 # sign server cert using the CA
@@ -24,7 +24,7 @@ openssl x509 -req -days 365 -in server.csr -CA ca.pem -CAkey ca-key.pem -CAcreat
 #Client (Local)
 ###################
 # export hostname of client connecting to docker server
-export CLIENT_HOST=<%="#{client_hostname}"%>
+export CLIENT_HOST=<%=client_hostname%>
 
 # create client key
 openssl genrsa -out client-key.pem 2048
