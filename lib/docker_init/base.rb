@@ -8,17 +8,18 @@ require 'docker_init'
 module DockerInit
   class Base
 
-    attr_reader :home, :name, :dir, :port, :tls, :hostname
+    attr_reader :vagranthome, :name, :dir, :port, :tls, :hostname, :store
 
-    def setup(home, name, options={})
-      @home = home
+    DOCKER_INIT_HOME = "#{ENV['HOME']}/.docker_init"
+
+    def setup(vagranthome, name, options={})
+      @vagranthome = vagranthome
       @name = name
-      @dir = "#{home}/#{name}"
+      @dir = "#{vagranthome}/#{name}/"
       @port = get_open_port
       @tls = options[:tls]
       @hostname = options[:hostname]
-
-      puts run('hostname')
+      @store = "#{DOCKER_INIT_HOME}/#{name}/"
 
       create_directories(dir)
       vagrantfile
@@ -31,17 +32,17 @@ module DockerInit
     def create_directories(dir)
       raise("Directory #{dir} exists! Please use another name") if directory_exists? dir
       FileUtils.mkdir_p(dir)
-      FileUtils.mkdir_p('/tmp/docker_init/')
+      FileUtils.mkdir_p(store)
     end
 
     def vagrantfile
-      File.open(dir+'/Vagrantfile', 'w') do |f|
+      File.open(dir+'Vagrantfile', 'w') do |f|
         f << template(File.join(DockerInit.data_dir, 'templates/Vagrantfile.erb'))
       end
     end
 
     def provision_file
-      File.open('/tmp/docker_init/provision.sh', 'w') do |f|
+      File.open(store+'provision.sh', 'w') do |f|
         f << template(File.join(DockerInit.data_dir, 'templates/provision.sh.erb'))
       end
     end
@@ -49,17 +50,17 @@ module DockerInit
     def configure_tls
       ca_reqeust_config
       tls_sh
-      run('sh /tmp/docker_init/tls.sh')
+      run("sh #{store}/tls.sh")
     end
 
     def ca_reqeust_config
-      File.open('/tmp/docker_init/ca.cnf', 'w') do |f|
+      File.open(store+'ca.cnf', 'w') do |f|
         f << template(File.join(DockerInit.data_dir, 'templates/ca_req.erb'))
       end
     end
 
     def tls_sh
-      File.open('/tmp/docker_init/tls.sh', 'w') do |f|
+      File.open(store+'tls.sh', 'w') do |f|
         f << template(File.join(DockerInit.data_dir, 'templates/tls.sh.erb'))
       end
     end
@@ -94,7 +95,7 @@ module DockerInit
       else
         puts ("export DOCKER_HOST=tcp://localhost:#{port}").green
       end
-      puts ("export DOCKER_CERT_PATH=/tmp/docker_init/").green if tls
+      puts ("export DOCKER_CERT_PATH=#{store}").green if tls
     end
 
     def docker_options
@@ -116,7 +117,8 @@ module DockerInit
         docker_options: docker_options,
         tls: tls,
         hostname: hostname,
-        client_hostname: client_hostname
+        client_hostname: client_hostname,
+        store: store
       )
     end
 
