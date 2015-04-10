@@ -8,17 +8,15 @@ require 'docker_init'
 module DockerInit
   class Base
 
-    attr_reader :vagranthome, :name, :nodes, :dir, :forwarded_port, :tls, :hostname, :store, :docker_hosts
+    attr_reader :vagranthome, :name, :nodes, :dir, :forwarded_port, :store, :docker_hosts
 
     DOCKER_INIT_HOME = "#{ENV['HOME']}/.docker_init"
 
-    def setup(vagranthome, name, nodes, options={})
+    def setup(vagranthome, name, nodes)
       @vagranthome = vagranthome
       @name = name
       @nodes = nodes.to_i
       @dir = "#{vagranthome}/#{name}/"
-      @tls = options[:tls]
-      @hostname = options[:hostname]
       @store = "#{DOCKER_INIT_HOME}/#{name}/"
 
       master = {name: name, forwarded_port: get_open_port}
@@ -31,7 +29,6 @@ module DockerInit
       create_directories(dir)
       vagrantfile
       provision_file
-      configure_tls if tls
       run("cd #{dir}; vagrant up")
       nodes == 0 ? display_info(master[:forwarded_port]) : setup_cluster
     end
@@ -54,35 +51,12 @@ module DockerInit
       end
     end
 
-    def configure_tls
-      ca_reqeust_config
-      tls_sh
-      run("sh #{store}/tls.sh")
-    end
-
-    def ca_reqeust_config
-      File.open(store+'ca.cnf', 'w') do |f|
-        f << template(File.join(DockerInit.data_dir, 'templates/ca_req.erb'))
-      end
-    end
-
-    def tls_sh
-      File.open(store+'tls.sh', 'w') do |f|
-        f << template(File.join(DockerInit.data_dir, 'templates/tls.sh.erb'))
-      end
-    end
-
     def directory_exists?(dir)
       test ?d, dir
     end
 
     def display_info(port)
-      if tls
-        puts ("export DOCKER_CERT_PATH=#{store}").green
-        puts ("docker --tlsverify -H tcp://#{hostname}:#{port} <docker_command_here>").green
-      else
-        puts ("export DOCKER_HOST=tcp://localhost:#{port}").green
-      end
+      puts ("export DOCKER_HOST=tcp://localhost:#{port}").green
     end
 
     def cluster_config(master)
@@ -142,11 +116,7 @@ module DockerInit
     end
 
     def docker_options
-      if tls
-        '--tlsverify --tlscacert=/etc/pki/tls/docker/ca.pem --tlscert=/etc/pki/tls/docker/server.pem --tlskey=/etc/pki/tls/docker/server-key.pem -H 0.0.0.0:2376 -H unix:///var/run/docker.sock'
-      else
-        '-H 0.0.0.0:2376 -H unix:///var/run/docker.sock'
-      end
+      '-H 0.0.0.0:2376 -H unix:///var/run/docker.sock'
     end
 
     def client_hostname
@@ -166,8 +136,6 @@ module DockerInit
         name: name,
         forwarded_port: forwarded_port,
         docker_options: docker_options,
-        tls: tls,
-        hostname: hostname,
         client_hostname: client_hostname,
         store: store,
         docker_hosts: docker_hosts

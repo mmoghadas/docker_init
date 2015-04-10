@@ -15,13 +15,6 @@ Vagrant.configure(2) do |config|
         <%="v.name = '#{c[:name]}'"%>
       end
 
-      <% if tls %>
-      <% %w(ca.pem server.pem server-key.pem).each do |file|%>
-      <%="node.vm.provision 'file', source: '#{store}/#{file}', destination:'/tmp/docker_init/#{file}'"%>
-      <%end%>
-      node.vm.provision :shell, privileged: true, :inline => "mkdir -p /etc/pki/tls/docker/"
-      node.vm.provision :shell, privileged: true, :inline => "cp /tmp/docker_init/*.pem /etc/pki/tls/docker/"
-      <%end%>
       <%="node.vm.provision 'shell', path: '#{store}/provision.sh'"%>
     <%="end"%>
 
