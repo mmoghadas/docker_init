@@ -6,7 +6,7 @@ module DockerInit
 
     option ["-d", "--vagranthome"], "VAGRANTHOME", "required: vagrant home", :required => true
     option ["-n", "--name"], "VAGRANTNAME", "required: vagrant name", :required => true
-    option ["-c", "--nodes"], "NODES", "required: number of nodes", :default => 1
+    option ["-c", "--nodes"], "NODES", "required: number of nodes", :default => 0
     option ["-h", "--hostname"], "HOSTNAME", "required if tls enabled"
     option "--tls", :flag, "USE TLS"
 
