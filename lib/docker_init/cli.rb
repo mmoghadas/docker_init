@@ -6,11 +6,10 @@ module DockerInit
 
     option ["-d", "--vagranthome"], "VAGRANTHOME", "required: vagrant home", :required => true
     option ["-n", "--name"], "VAGRANTNAME", "required: vagrant name", :required => true
-    option ["-h", "--hostname"], "HOSTNAME", "required if tls enabled"
-    option "--tls", :flag, "USE TLS"
+    option ["-c", "--nodes"], "NODES", "required: number of nodes", :default => 0
 
     def execute
-      DockerInit::Base.new.setup(vagranthome, name, {tls: tls?, hostname: hostname})
+      DockerInit::Base.new.setup(vagranthome, name, nodes)
     end
   end
 

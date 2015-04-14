@@ -7,6 +7,11 @@ This tool allows you to quickly start a docker vm on your localhost
 ## Setup
 
 ```
+# What you'll need:
+-> docker client (brew install docker)
+-> VirtualBox (https://www.virtualbox.org/wiki/Downloads)
+-> Vagrant (http://www.vagrantup.com/downloads.html)
+
 git clone git@github.com:mmoghadas/docker_init.git
 cd docker_init
 bundle
@@ -15,21 +20,15 @@ alias docker_init="bundle exec ./bin/docker_init"
 
 docker_init -d ~/vagrant -n mydocker
 
-
-# to enable tls
-# you must add an alias to your localhost for this to work
-# 127.0.0.1       localhost docker.example.com
-docker_init -d ~/vagrant -n mydocker --tls -h docker.example.com
+# to start a cluster
+docker_init -d ~/vagrant -n swarm -c 2
 ```
 
 
 ## Usage
 ```
-export DOCKER_HOST=tcp://localhost:<port_number>
-docker ps
-
-
-# for tls you will also need:
-export DOCKER_HOST=tcp://docker.example.com:<port_number> DOCKER_TLS_VERIFY=1
-export DOCKER_CERT_PATH=/tmp/docker_init/
+#port: generate during setup(forwarded port from vm to localhost host)
+#cluster_token_here: generated during setup
+docker -H tcp://127.0.0.1:<port> run --rm swarm list token://<cluster_token_here>
+docker -H tcp://127.0.0.1:<port> <docker_command_here>
 ```
