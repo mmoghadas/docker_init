@@ -8,7 +8,7 @@ This tool allows you to quickly start a docker vm on your localhost
 
 ```
 # What you'll need:
--> docker client (osx: brew install docker)
+-> docker client (OSX: brew install docker)
 -> VirtualBox (https://www.virtualbox.org/wiki/Downloads)
 -> Vagrant (http://www.vagrantup.com/downloads.html)
 
