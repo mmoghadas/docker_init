@@ -1,6 +1,6 @@
 docker_init
 ==================================
-This tool allows you to quickly start a docker vm on your localhost
+This tool allows you to quickly start a docker vm (running on CentOS7) on your localhost
 * Note: Currently tested on OSX
 
 
